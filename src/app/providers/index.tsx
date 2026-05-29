@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
+import { useLayoutEffect, type ReactNode } from "react";
 import { BrowserRouter } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "sonner";
+import { initTheme } from "@/shared/lib/theme";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,6 +18,13 @@ const queryClient = new QueryClient({
   },
 });
 
+const ThemeBootstrap = () => {
+  useLayoutEffect(() => {
+    initTheme();
+  }, []);
+  return null;
+};
+
 interface ProvidersProps {
   children?: ReactNode;
 }
@@ -25,6 +33,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
+        <ThemeBootstrap />
         <ReactQueryDevtools />
         <Toaster />
         {children}

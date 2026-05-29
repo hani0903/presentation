@@ -8,19 +8,25 @@ const getInitialTheme = (): Theme => {
   return "dark";
 };
 
+const applyTheme = (theme: Theme) => {
+  const root = document.documentElement;
+  if (theme === "dark") {
+    root.classList.add("dark");
+    root.classList.remove("light");
+  } else {
+    root.classList.add("light");
+    root.classList.remove("dark");
+  }
+  localStorage.setItem("theme", theme);
+};
+
+export const initTheme = () => applyTheme(getInitialTheme());
+
 export const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useLayoutEffect(() => {
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-      root.classList.remove("light");
-    } else {
-      root.classList.add("light");
-      root.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
+    applyTheme(theme);
   }, [theme]);
 
   const toggle = () => {
