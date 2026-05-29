@@ -1,0 +1,10 @@
+{
+  "todos": [
+    {
+      "content": "해커톤 2시까지 가기",
+      "isDone": false,
+      "id": "taR7jhttSxU"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
