@@ -8,8 +8,6 @@
 | 코드 | `JetBrains Mono Variable, JetBrains Mono, monospace` |
 | 로고 | `Fredoka Variable, Fredoka, sans-serif`              |
 
----
-
 ## 타입 스케일
 
 | 토큰                    | 크기 | 굵기 | 행간 | 자간     | 사용처                    |
@@ -28,24 +26,23 @@
 | `text-button`           | 16px | 600  | 1    | -0.01em  | 버튼 레이블               |
 | `text-code-display`     | 15px | 400  | 1.6  | 0        | 코드 블록                 |
 
----
+## 허용 크기 목록
+
+`96 / 80 / 64 / 44 / 40 / 32 / 24 / 22 / 18 / 16 / 15 / 13 px`
+
+이 외 크기(`text-[17px]`, `text-[21px]` 등)는 사용하지 않는다.
 
 ## Tailwind Usage
 
-```tsx
-<h1 className="text-display-1">
-  디자인에서 커밋까지
-</h1>
-
-<h2 className="text-heading-2">
-  AI 기반 컴포넌트 자동화 파이프라인
-</h2>
-
-<p className="text-body-2 text-on-surface-variant">
-  사람이 기억하고 지키는 규칙을 시스템이 대신 처리한다.
-</p>
-
-<code className="font-mono text-code-display">
-  git commit
-</code>
-```
+| 용도             | Tailwind 클래스               |
+| ---------------- | ----------------------------- |
+| 발표 메인 타이틀 | `text-display-1`              |
+| 발표 섹션 타이틀 | `text-display-2`              |
+| 페이지 메인 제목 | `text-heading-1`              |
+| 모바일 히어로    | `text-heading-1-mobile`       |
+| 섹션 제목        | `text-heading-2`              |
+| 카드 제목        | `text-heading-4`              |
+| 기본 본문        | `text-body-2`                 |
+| 보조 설명        | `text-body-3`                 |
+| 코드 블록        | `font-mono text-code-display` |
+| 로고             | `font-logo`                   |
