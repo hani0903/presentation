@@ -9,6 +9,8 @@ export { InlineCode } from "./ui/inline/InlineCode";
 export { BulletList } from "./ui/content/BulletList";
 export { Callout } from "./ui/content/Callout";
 export { CodeBlock } from "./ui/content/CodeBlock";
+export { Table } from "./ui/content/Table";
+export { FlowDiagram } from "./ui/content/FlowDiagram";
 export type {
   Slide,
   CoverSlide,

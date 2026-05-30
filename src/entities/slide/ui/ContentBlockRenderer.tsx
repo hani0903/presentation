@@ -5,6 +5,8 @@ import { Heading } from "./typography/Heading";
 import { BulletList } from "./content/BulletList";
 import { Callout } from "./content/Callout";
 import { CodeBlock } from "./content/CodeBlock";
+import { FlowDiagram } from "./content/FlowDiagram";
+import { Table } from "./content/Table";
 import { Highlight } from "./inline/Highlight";
 import { InlineCode } from "./inline/InlineCode";
 
@@ -30,6 +32,10 @@ export const ContentBlockRenderer = ({ block }: ContentBlockRendererProps) => {
       return <Callout variant={block.variant} text={block.text} />;
     case "code":
       return <CodeBlock lang={block.lang} code={block.code} />;
+    case "table":
+      return <Table headers={block.headers} rows={block.rows} />;
+    case "flow":
+      return <FlowDiagram steps={block.steps} direction={block.direction} />;
     default:
       return null;
   }
