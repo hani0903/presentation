@@ -34,11 +34,17 @@ argument-hint: <컴포넌트명 또는 작업 설명>
 
 ### 색상 역할
 
-- CTA → `--primary`
-- 정보성 → `--secondary`
-- 보상·XP → `--accent-500` 전용
-- 기본 텍스트 → `--on-surface`
-- 보조 텍스트 → `--on-surface-variant`
+| 목적                 | 토큰 / 클래스                    |
+| -------------------- | -------------------------------- |
+| CTA                  | `bg-primary text-on-primary`     |
+| 정보성 액션          | `bg-secondary text-on-secondary` |
+| 기본 텍스트          | `text-on-surface`                |
+| 보조 텍스트          | `text-on-surface-variant`        |
+| 강조·위계 (선택적)   | `primary-{100/200/300/500/700}`  |
+| 경고·포인트 (선택적) | `orange-{100/200/300/500/700}`   |
+| 성공·완료 (선택적)   | `green-{100/200/300/500/700}`    |
+
+팔레트 스케일은 강조·위계·장식 목적에만 허용. 기능적 색상(CTA·텍스트·배경)은 시맨틱 토큰 우선.
 
 ### Motion
 

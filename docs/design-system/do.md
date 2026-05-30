@@ -7,10 +7,15 @@
 
 ## Color
 
-- Semantic Token만 사용한다.
+- 기능적 색상(텍스트·배경·CTA·에러)은 Semantic Token만 사용한다.
 - 텍스트는 `text-on-surface`, `text-on-surface-variant`를 사용한다.
 - CTA는 `bg-primary text-on-primary`를 사용한다.
 - 컴포넌트는 Light/Dark 색상을 직접 분기하지 않는다.
+- 강조·위계·장식 목적에는 팔레트 스케일을 선택적으로 사용한다.
+  - `primary-{100~700}` — Primary 계열 틴트·포인트
+  - `orange-{100~700}` — 경고·강조 포인트
+  - `green-{100~700}` — 성공·완료 상태
+  - 권장 단계: **100**(배경 틴트) · **200**(서브 배경) · **300**(보조 강조) · **500**(포인트) · **700**(진한 강조)
 
 ---
 
