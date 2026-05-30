@@ -12,9 +12,11 @@ export function Button({
   return (
     <button
       className={cn(
-        "cursor-pointer rounded-md px-4 py-2 text-sm font-medium transition-colors",
-        variant === "primary" && "bg-black text-white hover:bg-neutral-800",
-        variant === "ghost" && "text-neutral-700 hover:bg-neutral-100",
+        "text-body-3 cursor-pointer rounded-xl px-4 py-2 font-medium transition-colors",
+        variant === "primary" &&
+          "bg-primary text-on-primary hover:bg-primary/90",
+        variant === "ghost" &&
+          "text-on-surface-variant hover:bg-surface-container",
         className,
       )}
       {...props}
