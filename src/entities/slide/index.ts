@@ -7,6 +7,8 @@ export { Body } from "./ui/typography/Body";
 export { Highlight } from "./ui/inline/Highlight";
 export { InlineCode } from "./ui/inline/InlineCode";
 export { BulletList } from "./ui/content/BulletList";
+export { Callout } from "./ui/content/Callout";
+export { CodeBlock } from "./ui/content/CodeBlock";
 export type {
   Slide,
   CoverSlide,
