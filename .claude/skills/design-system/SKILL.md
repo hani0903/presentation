@@ -48,25 +48,21 @@ argument-hint: <컴포넌트명 또는 작업 설명>
 
 ## 상세 파일
 
-| 필요한 정보      | 파일                                            |
-| ---------------- | ----------------------------------------------- |
-| 전체 컬러 토큰   | `docs/design-system/01-tokens-color.md`         |
-| 타입 스케일      | `docs/design-system/02-tokens-typography.md`    |
-| 간격·레이아웃    | `docs/design-system/03-tokens-spacing.md`       |
-| Elevation·Shadow | `docs/design-system/04-elevation.md`            |
-| Button 규칙      | `docs/design-system/05-components/button.md`    |
-| Card 규칙        | `docs/design-system/05-components/card-list.md` |
-| Input 규칙       | `docs/design-system/05-components/input.md`     |
-| Chip 규칙        | `docs/design-system/05-components/chip.md`      |
-| 허용 규칙 전체   | `docs/design-system/do.md`                      |
-| 금지 패턴 전체   | `docs/design-system/dont.md`                    |
+| 필요한 정보      | 파일                                         |
+| ---------------- | -------------------------------------------- |
+| 전체 컬러 토큰   | `docs/design-system/01-tokens-color.md`      |
+| 타입 스케일      | `docs/design-system/02-tokens-typography.md` |
+| 간격·레이아웃    | `docs/design-system/03-tokens-spacing.md`    |
+| Elevation·Shadow | `docs/design-system/04-elevation.md`         |
+| 허용 규칙 전체   | `docs/design-system/do.md`                   |
+| 금지 패턴 전체   | `docs/design-system/dont.md`                 |
 
 ## 작업 체크리스트
 
 구현 후 다음을 확인한다:
 
 - [ ] hex 하드코딩 없음 (CSS 변수만 사용)
-- [ ] 타입 스케일 허용 크기만 사용 (60/40/36/28/20/16/14/12px)
+- [ ] 타입 스케일 허용 크기만 사용 (96/80/64/44/40/32/24/22/18/16/15/13px)
 - [ ] 임의 픽셀 간격 없음 (gap 스케일 사용)
 - [ ] 컴포넌트별 반경 규칙 준수
 - [ ] shadow-xl/2xl 미사용

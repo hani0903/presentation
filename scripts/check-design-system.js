@@ -58,9 +58,9 @@ process.stdin.on("end", () => {
 		// 임의 폰트 크기 (허용 크기 외)
 		const fontMatch = line.match(/text-\[(\d+)px\]/)
 		if (fontMatch) {
-			const allowed = [60, 40, 36, 28, 20, 16, 14, 12]
+			const allowed = [96, 80, 64, 44, 40, 32, 24, 22, 18, 16, 15, 13]
 			if (!allowed.includes(Number(fontMatch[1]))) {
-				violations.push(`L${ln} [Typography] text-[${fontMatch[1]}px] 금지 → 허용: 60/40/36/28/20/16/14/12px`)
+				violations.push(`L${ln} [Typography] text-[${fontMatch[1]}px] 금지 → 허용: 96/80/64/44/40/32/24/22/18/16/15/13px`)
 			}
 		}
 
@@ -71,7 +71,7 @@ process.stdin.on("end", () => {
 
 		// 500ms 이상 transition duration
 		const durationMatch = line.match(/duration-\[(\d+)ms\]/)
-		if (durationMatch && Number(durationMatch[1]) >= 500) {
+		if (durationMatch && Number(durationMatch[1]) > 360) {
 			violations.push(`L${ln} [Motion] ${durationMatch[1]}ms 금지 → 최대 360ms`)
 		}
 
