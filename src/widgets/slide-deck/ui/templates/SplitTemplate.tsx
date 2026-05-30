@@ -2,7 +2,7 @@ import type { SplitSlide } from "@/entities/slide";
 
 export const SplitTemplate = ({ title, left, right }: SplitSlide) => {
   return (
-    <div className="flex h-full w-full flex-col justify-center gap-8 px-16 py-12">
+    <div className="flex h-full w-full flex-col gap-8 px-16 py-12">
       <h2 className="text-heading-3 text-on-surface">{title}</h2>
       <div className="grid grid-cols-2 gap-8">
         {[left, right].map((col, i) => (

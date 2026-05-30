@@ -2,7 +2,7 @@ import type { ContentSlide } from "@/entities/slide";
 
 export const ContentTemplate = ({ chapter, title, bullets }: ContentSlide) => {
   return (
-    <div className="flex h-full w-full flex-col justify-center gap-8 px-16 py-12">
+    <div className="flex h-full w-full flex-col gap-8 px-16 py-12">
       <span className="text-caption text-on-surface-variant tracking-widest uppercase">
         {chapter}
       </span>
