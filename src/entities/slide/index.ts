@@ -1,2 +1,11 @@
 export { SLIDES } from "./model/constants";
-export type { Slide } from "./model/types";
+export type {
+  Slide,
+  CoverSlide,
+  SectionSlide,
+  ContentSlide,
+  ProcessSlide,
+  ProcessStep,
+  SplitSlide,
+  SplitColumn,
+} from "./model/types";
