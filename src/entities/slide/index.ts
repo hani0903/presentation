@@ -11,6 +11,9 @@ export { Callout } from "./ui/content/Callout";
 export { CodeBlock } from "./ui/content/CodeBlock";
 export { Table } from "./ui/content/Table";
 export { FlowDiagram } from "./ui/content/FlowDiagram";
+export { ComparePanel } from "./ui/content/ComparePanel";
+export { ImagePanel } from "./ui/content/ImagePanel";
+export { OrderedList } from "./ui/content/OrderedList";
 export type {
   Slide,
   CoverSlide,
