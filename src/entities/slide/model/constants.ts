@@ -1,158 +1,197 @@
 import type { Slide } from "./types";
 
 export const SLIDES: Slide[] = [
-  // Slide 1 — CoverSlide
+  // ── 1P. 시작 페이지 ────────────────────────────────────────────────────────
   {
     id: 1,
     type: "cover",
     title: "Claude Harness를 활용한\nAI 개발 워크플로우 구축",
-    subtitle: "CLAUDE.md · Rules · Hooks · Skills",
-    presenter: "조하은",
+    subtitle:
+      "Spec → PRD → ADR → 구현 검증까지\nAI와 함께 반복 가능한 개발 프로세스 만들기",
+    presenter: "모리 / 조하은 · CMC Web 파트",
   },
 
-  // Slide 2 — 왜 관심을 가지게 되었나
+  // ── 2P. 왜 관심을 가지게 됐나 ───────────────────────────────────────────────
   {
     id: 2,
     type: "content",
     chapter: "01. 배경",
-    title: "왜 Claude Harness인가",
+    title: "AI에게 같은 말을 반복하고 있었다",
     body: [
       {
-        kind: "bullets",
-        items: [
-          "AI에게 매번 같은 컨텍스트를 설명하는 반복 비용",
-          "프로젝트를 모르는 AI는 일관된 코드를 만들지 못함",
-          "Harness = AI가 프로젝트를 이해하고 일관되게 동작하는 환경",
-        ],
+        kind: "code",
+        lang: "text",
+        code: "TypeScript로 작성해줘\nFSD 구조 지켜줘\nTailwind 사용해줘\n테스트 해줘\n커밋 메시지 작성해줘",
+      },
+      {
+        kind: "callout",
+        variant: "warning",
+        text: "규칙 누락 · 아키텍처 일관성 저하 · 품질 편차 발생",
+      },
+      {
+        kind: "callout",
+        variant: "info",
+        text: "AI를 더 잘 쓰는 방법은 없을까?",
       },
     ],
   },
 
-  // Slide 3 — Harness란 무엇인가
+  // ── 3P. Harness란? ──────────────────────────────────────────────────────────
   {
     id: 3,
     type: "content",
     chapter: "01. 배경",
-    title: "Claude Harness란",
+    title: "Harness란?",
     body: [
       {
-        kind: "bullets",
-        items: [
-          "CLAUDE.md — 프로젝트 맥락과 규칙을 AI에게 영속적으로 전달",
-          "Rules — 아키텍처·코딩 컨벤션을 대화마다 재설명하지 않아도 됨",
-          "Hooks — 파일 저장·커밋 시점에 품질 가드를 자동 실행",
-          "Skills — 반복 워크플로우를 재사용 가능한 명령으로 캡슐화",
+        kind: "callout",
+        variant: "info",
+        text: "말의 힘을 안전하게 제어하고 유용한 방향으로 이끌기 위한 도구 — AI 또한 강력하지만 방치하면 예측 불가능하게 작동합니다.",
+      },
+      {
+        kind: "flow",
+        steps: [
+          { label: "강력한 AI" },
+          { label: "Harness" },
+          { label: "예측 가능한 개발 프로세스" },
         ],
+        direction: "horizontal",
+      },
+      {
+        kind: "body",
+        text: "→ AI 에이전트가 안전하고 예측 가능한 방식으로 작동하도록 설계된 제어 구조 전체",
       },
     ],
   },
 
-  // Slide 4 — SectionSlide
+  // ── 4P. CLAUDE.md ───────────────────────────────────────────────────────────
   {
     id: 4,
-    type: "section",
-    sectionNumber: "02",
-    title: "내가 구축하고 있는 Claude Harness",
-    items: ["CLAUDE.md", "Design System", "Feature Planning"],
-  },
-
-  // Slide 5 — CLAUDE.md
-  {
-    id: 5,
     type: "content",
     chapter: "02. 내가 구축하고 있는 Harness",
     title: "CLAUDE.md",
     body: [
       {
+        kind: "callout",
+        variant: "info",
+        text: "세션 시작 시 자동으로 로드되는 프로젝트 규칙집",
+      },
+      {
+        kind: "code",
+        lang: "md",
+        code: "## FSD 아키텍처\npages(4) → widgets(3) → features(2) → entities(1) → shared(0)\n\n## Design System\nUI·CSS 작업 시 `design-system` skill 트리거\n\n## Code Style\nnamed export만 · default export 금지 · import type 강제",
+      },
+      {
         kind: "bullets",
         items: [
-          "프로젝트 개요·기술 스택·아키텍처를 단일 문서에 정의",
-          "FSD 레이어 규칙, 컴포넌트 컨벤션, import 규칙 자동 적용",
-          "대화가 바뀌어도 AI가 동일한 맥락으로 작업",
+          "FSD 레이어 규칙 — import 방향 자동 적용",
+          "Design System 연결 — UI 작업 시 skill 자동 트리거",
+          "기술 스택 명시 — 매 세션마다 반복 설명 불필요",
         ],
       },
     ],
   },
 
-  // Slide 6 — Design System + Skills
+  // ── 5P. Design System + Skills ─────────────────────────────────────────────
   {
-    id: 6,
+    id: 5,
     type: "content",
     chapter: "02. 내가 구축하고 있는 Harness",
     title: "Design System + Skills",
     body: [
       {
-        kind: "bullets",
-        items: [
-          "PostToolUse 훅: 파일 저장 시 디자인 토큰 위반 자동 감지",
-          "design-system 스킬: UI 작업 전 원칙과 토큰을 컨텍스트에 로드",
-          "feature-planner 스킬: 스펙 인터뷰 → PRD → 이슈 분해 자동화",
+        kind: "flow",
+        steps: [
+          { label: "Figma Stitch", description: "design.md 추출" },
+          {
+            label: "docs/design-system/",
+            description: "color · typography · spacing · elevation",
+          },
+          { label: "SKILL.md", description: "AI 작업 전 컨텍스트 로드" },
+          { label: "PostToolUse 훅", description: "저장 시 위반 자동 감지" },
         ],
+        direction: "horizontal",
+      },
+      {
+        kind: "callout",
+        variant: "success",
+        text: "문서 구조화 완료 · Skill 구축 완료 / Storybook 자동화는 다음 단계",
       },
     ],
   },
 
-  // Slide 7 — ProcessSlide
+  // ── 6P. Feature Planning Workflow ──────────────────────────────────────────
   {
-    id: 7,
+    id: 6,
     type: "process",
-    title: "Feature Planning Workflow",
+    title: "기능 개발 프로세스 구조화",
     steps: [
-      { label: "spec-original.md", description: "초기 아이디어 · 기능 정의서" },
-      { label: "스펙 인터뷰", description: "1문1답으로 모호성 제거" },
-      { label: "spec-fixed.md", description: "확정된 요구사항" },
-      { label: "PRD + ADR", description: "사용자 스토리 · 기술 결정" },
-      { label: "이슈 분해", description: "수직 슬라이스 · Given-When-Then AC" },
-      { label: "구현 → 검증", description: "이슈 순서대로 구현 · 동작 확인" },
+      { label: "spec-original", description: "초기 기능 정의서" },
+      { label: "Spec Interview", description: "1문1답 · 추천 이유 포함" },
+      { label: "spec-fixed", description: "확정된 요구사항" },
+      { label: "PRD + ADR", description: "사용자 스토리 · 기술 결정 4요소" },
+      {
+        label: "Issue 분해",
+        description: "수직 슬라이스 · Given-When-Then AC",
+      },
+      { label: "구현", description: "이슈 순서대로" },
+      { label: "Playwright 검증", description: "동작 확인 후 커밋" },
     ],
   },
 
-  // Slide 8 — SectionSlide
+  // ── 7P. 현재까지와 앞으로 ──────────────────────────────────────────────────
   {
-    id: 8,
-    type: "section",
-    sectionNumber: "03",
-    title: "다음 실험 계획",
-  },
-
-  // Slide 9 — SplitSlide
-  {
-    id: 9,
+    id: 7,
     type: "split",
     title: "현재까지 / 앞으로",
     left: {
       heading: "현재 검증 완료",
       bullets: [
-        "CLAUDE.md 기반 FSD 아키텍처 룰셋",
-        "디자인 시스템 PostToolUse 훅",
-        "feature-planner 스킬 파이프라인",
-        "Husky + commitlint 커밋 가드",
+        "CLAUDE.md 기반 FSD 룰셋",
+        "Design System 문서화 + Skill",
+        "Spec Interview",
+        "PRD + ADR",
+        "Issue 분해",
+        "구현",
+        "Playwright 검증",
       ],
     },
     right: {
       heading: "다음 실험 계획",
       bullets: [
-        "Playwright 기반 검증 자동화",
-        "FSD PreToolUse 훅 완성",
-        "Storybook 컴포넌트 문서화",
-        "슬라이드 콘텐츠 MDX 전환",
+        "Design.md 기반 컴포넌트 자동 생성",
+        "Storybook 문서 자동화",
+        "AC 기반 TDD 자동화",
       ],
     },
   },
 
-  // Slide 10 — 마무리
+  // ── 8P. 다음에 해보고 싶은 것 ──────────────────────────────────────────────
   {
-    id: 10,
+    id: 8,
     type: "content",
-    chapter: "03. 마무리",
-    title: "한 줄 요약",
+    chapter: "03. 다음 단계",
+    title: "다음에 해보고 싶은 것",
     body: [
       {
-        kind: "bullets",
-        items: [
-          '"AI에게 프로젝트를 이해시키면, 반복은 사라지고 설계가 남는다"',
-          "Harness는 완성이 아니라 지속적으로 구축하는 시스템",
-          "이 발표 자체가 Harness로 구현됐습니다",
+        kind: "table",
+        headers: ["주제", "흐름", "관심 포인트"],
+        rows: [
+          [
+            "Design.md 기반\n컴포넌트 생성",
+            "Figma → Stitch → design.md → Claude → Component",
+            "디자인 의도 손실 최소화 · 토큰 자동 반영",
+          ],
+          [
+            "Storybook\n문서 자동화",
+            "Component → Storybook → 문서화",
+            "컴포넌트 재사용성 · 협업 효율",
+          ],
+          [
+            "AC 기반 TDD",
+            "Issue → AC → Test → Implement",
+            "Red → Green → Refactor 자동화 가능성",
+          ],
         ],
       },
     ],
