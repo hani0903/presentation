@@ -72,13 +72,19 @@ export const SLIDES: Slide[] = [
     ],
   },
 
-  // Slide 7 — ProcessSlide (Issue 3에서 교체)
+  // Slide 7 — ProcessSlide
   {
     id: 7,
-    type: "content",
-    chapter: "(프로세스)",
+    type: "process",
     title: "Feature Planning Workflow",
-    bullets: ["Issue 3에서 ProcessSlide 템플릿으로 교체됩니다"],
+    steps: [
+      { label: "spec-original.md", description: "초기 아이디어 · 기능 정의서" },
+      { label: "스펙 인터뷰", description: "1문1답으로 모호성 제거" },
+      { label: "spec-fixed.md", description: "확정된 요구사항" },
+      { label: "PRD + ADR", description: "사용자 스토리 · 기술 결정" },
+      { label: "이슈 분해", description: "수직 슬라이스 · Given-When-Then AC" },
+      { label: "구현 → 검증", description: "이슈 순서대로 구현 · 동작 확인" },
+    ],
   },
 
   // Slide 8 — SectionSlide
@@ -89,13 +95,29 @@ export const SLIDES: Slide[] = [
     title: "다음 실험 계획",
   },
 
-  // Slide 9 — SplitSlide (Issue 3에서 교체)
+  // Slide 9 — SplitSlide
   {
     id: 9,
-    type: "content",
-    chapter: "(비교)",
+    type: "split",
     title: "현재까지 / 앞으로",
-    bullets: ["Issue 3에서 SplitSlide 템플릿으로 교체됩니다"],
+    left: {
+      heading: "현재 검증 완료",
+      bullets: [
+        "CLAUDE.md 기반 FSD 아키텍처 룰셋",
+        "디자인 시스템 PostToolUse 훅",
+        "feature-planner 스킬 파이프라인",
+        "Husky + commitlint 커밋 가드",
+      ],
+    },
+    right: {
+      heading: "다음 실험 계획",
+      bullets: [
+        "Playwright 기반 검증 자동화",
+        "FSD PreToolUse 훅 완성",
+        "Storybook 컴포넌트 문서화",
+        "슬라이드 콘텐츠 MDX 전환",
+      ],
+    },
   },
 
   // Slide 10 — 마무리
