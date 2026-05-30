@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Harness — 조하은</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #131720;
+    --surface2: #1a1f2e;
+    --surface3: #222840;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --text-muted: #6b7280;
+    --text-dim: #9ca3af;
+    --accent: #7c6af7;
+    --accent2: #5eead4;
+    --accent3: #f59e0b;
+    --green: #34d399;
+    --red: #f87171;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow: hidden;
+  }
+
+  .slides {
+    width: 100vw; height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 56px 72px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateX(40px);
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+  }
+
+  .slide.exit {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .slide-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .slide-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1.slide-title {
+    font-family: var(--sans);
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  h2.slide-title {
+    font-family: var(--sans);
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 32px;
+  }
+
+  .accent { color: var(--accent); }
+  .accent2 { color: var(--accent2); }
+  .accent3 { color: var(--accent3); }
+  .green { color: var(--green); }
+  .red { color: var(--red); }
+  .muted { color: var(--text-muted); }
+  .dim { color: var(--text-dim); }
+
+  .nav {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 40px;
+    padding: 10px 20px;
+  }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover { background: var(--surface2); color: var(--text); }
+
+  .nav-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .dot.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    width: 20px;
+    border-radius: 3px;
+  }
+
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-dim);
+    overflow: hidden;
+  }
+
+  .code-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot-red { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
+  .dot-yellow { width: 10px; height: 10px; border-radius: 50%; background: #febc2e; }
+  .dot-green { width: 10px; height: 10px; border-radius: 50%; background: #28c840; }
+
+  .code-filename {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: 8px;
+  }
+
+  .code-body {
+    padding: 20px 24px;
+  }
+
+  .code-line { display: flex; gap: 16px; }
+  .line-num { color: var(--surface3); user-select: none; min-width: 20px; text-align: right; }
+  .kw { color: var(--accent); }
+  .str { color: var(--green); }
+  .cmt { color: #4a5568; }
+  .val { color: var(--accent3); }
+  .fn { color: var(--accent2); }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 2;
+    color: var(--text-dim);
+  }
+
+  .tree-folder { color: var(--accent3); }
+  .tree-file { color: var(--text-dim); }
+  .tree-highlight { color: var(--accent2); background: rgba(94,234,212,0.08); border-radius: 3px; padding: 0 4px; }
+  .tree-badge {
+    font-size: 10px;
+    color: var(--accent);
+    border: 1px solid rgba(124,106,247,0.4);
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .card-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+
+  .card-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .card-desc {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin: 2px;
+  }
+
+  .badge-purple { background: rgba(124,106,247,0.15); color: var(--accent); border: 1px solid rgba(124,106,247,0.3); }
+  .badge-teal { background: rgba(94,234,212,0.1); color: var(--accent2); border: 1px solid rgba(94,234,212,0.25); }
+  .badge-amber { background: rgba(245,158,11,0.1); color: var(--accent3); border: 1px solid rgba(245,158,11,0.25); }
+  .badge-green { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .flow-step {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .flow-step.hl { border-color: rgba(124,106,247,0.5); color: var(--accent); background: rgba(124,106,247,0.08); }
+  .flow-step.hl2 { border-color: rgba(94,234,212,0.4); color: var(--accent2); background: rgba(94,234,212,0.06); }
+
+  .flow-arrow {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .divider {
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+
+  .slide-1 { justify-content: center; }
+  .slide-8 .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .bottom-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--surface2);
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    flex: 1;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+  }
+
+  .col { display: flex; flex-direction: column; gap: 12px; }
+
+  p.body { font-family: var(--sans); font-size: 16px; line-height: 1.8; color: var(--text-dim); }
+  p.body strong { color: var(--text); font-weight: 500; }
+
+  .inline-code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--accent2);
+  }
+
+  .highlight-box {
+    background: rgba(124,106,247,0.06);
+    border: 1px solid rgba(124,106,247,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+  }
+
+  .highlight-box p { font-family: var(--sans); font-size: 15px; color: var(--text-dim); line-height: 1.7; }
+
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step-row:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(124,106,247,0.1);
+    border: 1px solid rgba(124,106,247,0.25);
+    border-radius: 4px;
+    padding: 2px 7px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  .step-content { flex: 1; }
+  .step-title { font-family: var(--sans); font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .step-desc { font-family: var(--sans); font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .check-item:last-child { border-bottom: none; }
+  .check-icon { color: var(--green); font-size: 16px; }
+  .check-icon.pending { color: var(--text-muted); }
+
+  .big-quote {
+    font-family: var(--sans);
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.6;
+    border-left: 3px solid var(--accent);
+    padding-left: 24px;
+    margin: 24px 0;
+  }
+
+  .subtag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="bottom-bar"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="slides" id="slides">
+
+  <!-- SLIDE 1: 표지 -->
+  <div class="slide slide-1 active" id="slide-0">
+    <div style="max-width: 680px;">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 32px; display: flex; gap: 12px; align-items: center;">
+        <span class="badge badge-purple">CMC Web</span>
+        <span>조하은</span>
+        <span style="color: var(--border2)">│</span>
+        <span>5min</span>
+      </div>
+      <h1 class="slide-title" style="font-size: 36px; line-height: 1.3; margin-bottom: 20px;">
+        <span class="accent">Claude Harness</span>를 활용한<br>AI 개발 워크플로우 구축
+      </h1>
+      <p style="font-size: 15px; color: var(--text-muted); line-height: 1.9;">
+        Spec → PRD → ADR → 구현 검증까지<br>
+        AI와 함께 반복 가능한 개발 프로세스 만들기
+      </p>
+      <div style="margin-top: 48px; display: flex; align-items: center; gap: 32px;">
+        <div>
+          <p style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Stack</p>
+          <div>
+            <span class="badge badge-teal">React 19</span>
+            <span class="badge badge-teal">TypeScript</span>
+            <span class="badge badge-teal">FSD</span>
+            <span class="badge badge-teal">Claude Code</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: 왜? -->
+  <div class="slide" id="slide-1">
+    <div class="slide-header">
+      <span class="slide-num">02</span>
+      <span class="tag">motivation</span>
+    </div>
+    <h2 class="slide-title">왜 관심을 가지게 됐나?</h2>
+    <div class="two-col">
+      <div class="col">
+        <p class="body" style="margin-bottom: 8px;">매 세션마다 이 말을 반복하고 있었다</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dot-red"></div><div class="dot-yellow"></div><div class="dot-green"></div>
+            <span class="code-filename">chat prompt</span>
+          </div>
+          <div class="code-body" style="line-height: 2.2;">
+            <div style="color: var(--text-dim);">TypeScript로 작성해줘</div>
+            <div style="color: var(--text-dim);">FSD 구조 지켜줘</div>
+            <div style="color: var(--text-dim);">Tailwind 사용해줘</div>
+            <div style="color: var(--text-dim);">테스트 해줘</div>
+            <div style="color: var(--text-dim);">커밋 메시지 작성해줘</div>
+            <div style="color: var(--text-muted); margin-top: 8px;">↩ 매 세션마다 반복</div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <p class="body" style="margin-bottom: 8px;">그 결과</p>
+        <div class="card" style="border-left: 3px solid var(--red); margin-bottom: 12px;">
+          <div class="card-label" style="color: var(--red);">problem 01</div>
+          <div class="card-title">규칙 누락</div>
+          <div class="card-desc">하나라도 빠뜨리면 AI가 규칙 밖의 코드를 생성</div>
+        </div>
+        <div class="card" style="border-left: 3px solid var(--red);">
+          <div class="card-label" style="color: var(--red);">problem 02</div>
+          <div class="card-title">아키텍처 일관성 저하 → 품질 편차</div>
+          <div class="card-desc">세션마다 다른 결과, 누적될수록 기술 부채 증가</div>
+        </div>
+        <div class="highlight-box" style="margin-top: 16px;">
+          <p><strong style="color: var(--text);">→ AI를 더 잘 쓰는 방법은 없을까?</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: 하네스란? -->
+  <div class="slide" id="slide-2">
+    <div class="slide-header">
+      <span class="slide-num">03</span>
+      <span class="tag">concept</span>
+    </div>
+    <h2 class="slide-title">하네스(Harness)란?</h2>
+    <div class="two-col" style="align-items: center;">
+      <div>
+        <p class="body" style="margin-bottom: 20px;">
+          하네스는 원래 <strong>말에 장착하는 마구</strong>를 의미합니다.<br>
+          말의 강한 힘을 안전하게 제어하고,<br>원하는 방향으로 이끌기 위한 도구입니다.
+        </p>
+        <div class="highlight-box">
+          <p style="font-size: 14px; color: var(--text);">
+            AI 에이전트도 강력한 힘을 가지지만,<br>방치하면 예측 불가능하게 작동합니다.
+          </p>
+        </div>
+        <div style="margin-top: 24px; padding: 20px; background: var(--surface); border: 1px solid var(--border2); border-radius: 10px;">
+          <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">AI Harness</p>
+          <p style="font-size: 15px; color: var(--text); line-height: 1.7;">
+            AI 에이전트가 <span class="accent">안전</span>하고 <span class="accent2">예측 가능</span>한 방식으로 작동하도록 설계된 <strong>제어 구조 전체</strong>
+          </p>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div style="background: var(--surface2); border: 1px solid rgba(248,113,113,0.3); border-radius: 10px; padding: 16px 28px; text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 4px;">🐎</div>
+            <div style="font-family: var(--mono); font-size: 12px; color: var(--red);">강력한 AI</div>
+          </div>
+          <div style="font-family: var(--mono); font-size: 18px; color: var(--text-muted);">↓</div>
+          <div style="background: rgba(124,106,247,0.1); border: 1px solid rgba(124,106,247,0.4); border-radius: 10px; padding: 16px 28px; text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 4px;">⚙️</div>
+            <div style="font-family: var(--mono); font-size: 12px; color: var(--accent);">Harness</div>
+          </div>
+          <div style="font-family: var(--mono); font-size: 18px; color: var(--text-muted);">↓</div>
+          <div style="background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.3); border-radius: 10px; padding: 16px 28px; text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 4px;">✅</div>
+            <div style="font-family: var(--mono); font-size: 12px; color: var(--green);">예측 가능한 개발</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: CLAUDE.md -->
+  <div class="slide" id="slide-3">
+    <div class="slide-header">
+      <span class="slide-num">04</span>
+      <span class="tag">harness · 01</span>
+    </div>
+    <h2 class="slide-title"><span class="accent2">CLAUDE.md</span> 셋팅하기</h2>
+    <div class="two-col">
+      <div>
+        <div class="code-block" style="height: 100%;">
+          <div class="code-header">
+            <div class="dot-red"></div><div class="dot-yellow"></div><div class="dot-green"></div>
+            <span class="code-filename">CLAUDE.md</span>
+          </div>
+          <div class="code-body" style="font-size: 12px;">
+            <div class="code-line"><span class="kw">##</span> Tech Stack</div>
+            <div class="code-line"><span style="color: var(--text-dim);">- React 19, TypeScript, Vite 6</span></div>
+            <div class="code-line"><span style="color: var(--text-dim);">- Zustand v5, TanStack Query v5</span></div>
+            <div class="code-line" style="margin-top: 10px;"><span class="kw">##</span> FSD 아키텍처</div>
+            <div class="code-line"><span class="str">pages → widgets → features</span></div>
+            <div class="code-line"><span class="str">→ entities → shared</span></div>
+            <div class="code-line" style="margin-top: 10px;"><span class="kw">##</span> Design System</div>
+            <div class="code-line"><span style="color: var(--text-dim);">UI 작업 시 </span><span class="fn">design-system</span></div>
+            <div class="code-line"><span class="str">skill 트리거</span></div>
+            <div class="code-line" style="margin-top: 10px;"><span class="kw">##</span> Code Style</div>
+            <div class="code-line"><span class="cmt">// named export만, default 금지</span></div>
+            <div class="code-line"><span class="cmt">// PascalCase 컴포넌트 파일명</span></div>
+            <div class="code-line"><span class="cmt">// import type 구분 필수</span></div>
+            <div class="code-line" style="margin-top: 10px;"><span class="kw">##</span> 두 진입점</div>
+            <div class="code-line"><span class="val">ai-quick</span><span style="color: var(--text-dim);">  → lite 검증</span></div>
+            <div class="code-line"><span class="val">ai-pipeline</span><span style="color: var(--text-dim);"> → 전체 검증</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <p class="body">세션 시작 시 Claude가 자동으로 로드하는 <strong>프로젝트 규칙집</strong></p>
+        <div class="step-row">
+          <span class="step-num">01</span>
+          <div class="step-content">
+            <div class="step-title">코딩 규약</div>
+            <div class="step-desc">언어, 프레임워크, 네이밍 컨벤션</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <span class="step-num">02</span>
+          <div class="step-content">
+            <div class="step-title">FSD 아키텍처 규칙</div>
+            <div class="step-desc">레이어 의존 방향 강제, import 규칙</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <span class="step-num">03</span>
+          <div class="step-content">
+            <div class="step-title">두 가지 진입점</div>
+            <div class="step-desc"><span class="inline-code">ai-quick</span> (즉석) vs <span class="inline-code">ai-pipeline</span> (전체 검증)</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <span class="step-num">04</span>
+          <div class="step-content">
+            <div class="step-title">금지 사항</div>
+            <div class="step-desc">변경 금지 파일, 금지 패턴 명시</div>
+          </div>
+        </div>
+        <div class="highlight-box" style="margin-top: 8px;">
+          <p>매번 말로 설명하던 규칙을 <strong style="color: var(--text);">한 번만 써두면</strong> 모든 세션에 자동 적용</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: Design System + Skill + 폴더 구조 -->
+  <div class="slide" id="slide-4">
+    <div class="slide-header">
+      <span class="slide-num">05</span>
+      <span class="tag">harness · 02</span>
+    </div>
+    <h2 class="slide-title"><span class="accent2">Design System</span> 문서화 + Skill</h2>
+    <div class="two-col">
+      <div>
+        <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">폴더 구조</p>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="dot-red"></div><div class="dot-yellow"></div><div class="dot-green"></div>
+            <span class="code-filename">project root</span>
+          </div>
+          <div class="code-body" style="font-size: 12px; line-height: 2.1;">
+            <div class="tree">
+              <div><span class="tree-folder">📁 .claude/</span></div>
+              <div>&nbsp;&nbsp;<span class="tree-folder">📁 skills/</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-highlight">📄 design-system/SKILL.md</span> <span class="tree-badge">핵심</span></div>
+              <div>&nbsp;&nbsp;<span class="tree-folder">📁 rules/</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-file">📄 fsd-shared.md</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-file">📄 component-convention.md</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-file">📄 import-convention.md</span></div>
+              <div><span class="tree-highlight">📄 CLAUDE.md</span> <span class="tree-badge">자동 로드</span></div>
+              <div><span class="tree-folder">📁 docs/</span></div>
+              <div>&nbsp;&nbsp;<span class="tree-folder">📁 design-system/</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-file">📄 01-tokens-color.md</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-file">📄 02-tokens-typography.md</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-file">📄 03-tokens-spacing.md</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="tree-file">📄 do.md / dont.md</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="flow" style="margin-bottom: 20px;">
+          <div class="flow-step">Stitch</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">design.md</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step hl2">docs/design-system</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step hl">SKILL.md</div>
+        </div>
+        <div class="card" style="margin-bottom: 12px;">
+          <div class="card-label">CLAUDE.md 명시</div>
+          <div style="font-size: 13px; color: var(--accent2);">
+            UI 작업 시 design-system 스킬 트리거
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-label">자동화되는 것들</div>
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+            <div class="check-item"><span class="check-icon">✓</span> hex 하드코딩 없이 CSS 변수만 사용</div>
+            <div class="check-item"><span class="check-icon">✓</span> 컴포넌트 반경 규칙 자동 준수</div>
+            <div class="check-item"><span class="check-icon">✓</span> 타입 스케일 허용 크기만 사용</div>
+            <div class="check-item"><span class="check-icon">✓</span> 라이트/다크 모드 동시 대응</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Feature Planning Workflow -->
+  <div class="slide" id="slide-5">
+    <div class="slide-header">
+      <span class="slide-num">06</span>
+      <span class="tag">harness · 03</span>
+    </div>
+    <h2 class="slide-title">기능 개발 프로세스 구조화</h2>
+    <div class="two-col">
+      <div>
+        <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">전체 플로우</p>
+        <div style="display: flex; flex-direction: column; gap: 0;">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <span class="badge badge-purple">01</span>
+            <div>
+              <div style="font-size: 14px; font-weight: 500; color: var(--text);">spec-original</div>
+              <div style="font-size: 12px; color: var(--text-muted);">기능 정의서 초안 작성</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <span class="badge badge-purple">02</span>
+            <div>
+              <div style="font-size: 14px; font-weight: 500; color: var(--accent);">Spec Interview</div>
+              <div style="font-size: 12px; color: var(--text-muted);">AI가 스펙 결정을 위해 질문</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <span class="badge badge-purple">03</span>
+            <div>
+              <div style="font-size: 14px; font-weight: 500; color: var(--text);">spec-fixed</div>
+              <div style="font-size: 12px; color: var(--text-muted);">인터뷰 결과로 보완된 정의서</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <span class="badge badge-teal">04</span>
+            <div>
+              <div style="font-size: 14px; font-weight: 500; color: var(--accent2);">PRD</div>
+              <div style="font-size: 12px; color: var(--text-muted);">기술 결정 추가, 단일 기준 문서</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <span class="badge badge-teal">05</span>
+            <div>
+              <div style="font-size: 14px; font-weight: 500; color: var(--accent2);">ADR</div>
+              <div style="font-size: 12px; color: var(--text-muted);">아키텍처 결정 기록 (3안 비교 → 채택)</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);">
+            <span class="badge badge-amber">06</span>
+            <div>
+              <div style="font-size: 14px; font-weight: 500; color: var(--text);">구현</div>
+              <div style="font-size: 12px; color: var(--text-muted);">PRD + ADR 기반 코드 생성</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0;">
+            <span class="badge badge-green">07</span>
+            <div>
+              <div style="font-size: 14px; font-weight: 500; color: var(--green);">Playwright 검증</div>
+              <div style="font-size: 12px; color: var(--text-muted);">자동화 E2E 테스트</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">실제 예시 — 홈 페이지</p>
+        <div class="code-block" style="margin-bottom: 16px;">
+          <div class="code-header">
+            <div class="dot-red"></div><div class="dot-yellow"></div><div class="dot-green"></div>
+            <span class="code-filename">spec interview</span>
+          </div>
+          <div class="code-body" style="font-size: 12px; line-height: 2.1;">
+            <div><span class="cmt">Q1</span> <span style="color: var(--text-dim);">사이트 이름은?</span></div>
+            <div><span style="color: var(--text-muted); margin-left: 20px;">→</span> <span class="str">"Presentation Archive"</span></div>
+            <div style="margin-top: 4px;"><span class="cmt">Q2</span> <span style="color: var(--text-dim);">카드 클릭 방식은?</span></div>
+            <div><span style="color: var(--text-muted); margin-left: 20px;">→</span> <span class="str">새 탭 (target="_blank")</span></div>
+            <div style="margin-top: 4px;"><span class="cmt">Q3</span> <span style="color: var(--text-dim);">다크모드 기본값은?</span></div>
+            <div><span style="color: var(--text-muted); margin-left: 20px;">→</span> <span class="str">dark 고정</span></div>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <p>문서가 쌓일수록<br><strong style="color: var(--text);">AI가 일관된 기준으로 코드를 작성</strong>하는 근거가 생긴다</p>
+        </div>
+        <div style="margin-top: 12px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border2); border-radius: 8px;">
+          <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">ADR 구조</p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="badge badge-purple">Context</span>
+            <span class="badge badge-purple">Decision</span>
+            <span class="badge badge-purple">Alternatives</span>
+            <span class="badge badge-purple">Consequences</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: 현재까지 -->
+  <div class="slide" id="slide-6">
+    <div class="slide-header">
+      <span class="slide-num">07</span>
+      <span class="tag">status</span>
+    </div>
+    <h2 class="slide-title">현재까지와 앞으로</h2>
+    <div class="two-col">
+      <div>
+        <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">검증 완료</p>
+        <div class="card" style="padding: 0; overflow: hidden;">
+          <div class="check-item" style="padding: 14px 18px;"><span class="check-icon">✓</span> CLAUDE.md</div>
+          <div class="check-item" style="padding: 14px 18px;"><span class="check-icon">✓</span> Design System 문서화</div>
+          <div class="check-item" style="padding: 14px 18px;"><span class="check-icon">✓</span> design-system Skill</div>
+          <div class="check-item" style="padding: 14px 18px;"><span class="check-icon">✓</span> Spec Interview</div>
+          <div class="check-item" style="padding: 14px 18px;"><span class="check-icon">✓</span> PRD 작성</div>
+          <div class="check-item" style="padding: 14px 18px;"><span class="check-icon">✓</span> ADR 작성</div>
+          <div class="check-item" style="padding: 14px 18px;"><span class="check-icon">✓</span> FSD 기반 구현</div>
+          <div class="check-item" style="padding: 14px 18px; border-bottom: none;"><span class="check-icon">✓</span> Playwright 검증</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">예정</p>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="card" style="border-left: 3px solid var(--accent);">
+            <div class="card-label">다음 목표 01</div>
+            <div class="card-title">Storybook 자동화</div>
+            <div class="card-desc">컴포넌트 → Storybook 문서 자동 생성</div>
+          </div>
+          <div class="card" style="border-left: 3px solid var(--accent);">
+            <div class="card-label">다음 목표 02</div>
+            <div class="card-title">Figma → 컴포넌트 파이프라인</div>
+            <div class="card-desc">design.md 기반 컴포넌트 자동 생성</div>
+          </div>
+          <div class="card" style="border-left: 3px solid var(--accent);">
+            <div class="card-label">다음 목표 03</div>
+            <div class="card-title">AC 기반 TDD</div>
+            <div class="card-desc">Acceptance Criteria → 테스트 → 구현</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: 마무리 -->
+  <div class="slide slide-8" id="slide-7">
+    <div class="slide-header">
+      <span class="slide-num">08</span>
+      <span class="tag">outro</span>
+    </div>
+    <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 700px;">
+      <div class="divider"></div>
+      <div class="big-quote">
+        AI에게 매번 설명하는 개발자가 아니라,<br>
+        <span class="accent">한 번 설계해두면</span><br>
+        AI가 알아서 따라오는 구조를 만드는 것
+      </div>
+      <div style="margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap;">
+        <span class="badge badge-purple">CLAUDE.md</span>
+        <span class="badge badge-teal">Design System Skill</span>
+        <span class="badge badge-amber">Spec Interview</span>
+        <span class="badge badge-purple">PRD</span>
+        <span class="badge badge-teal">ADR</span>
+        <span class="badge badge-green">Playwright</span>
+      </div>
+      <div style="margin-top: 40px; font-size: 13px; color: var(--text-muted);">
+        감사합니다 — 조하은 / CMC Web
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">← prev</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="nav-btn" id="nextBtn" onclick="navigate(1)">next →</button>
+</div>
+
+<script>
+  const TOTAL = 8;
+  let current = 0;
+
+  function buildDots() {
+    const container = document.getElementById('navDots');
+    for (let i = 0; i < TOTAL; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => goTo(i);
+      container.appendChild(d);
+    }
+  }
+
+  function updateDots() {
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.className = 'dot' + (i === current ? ' active' : '');
+    });
+  }
+
+  function updateProgress() {
+    const pct = ((current + 1) / TOTAL) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= TOTAL) return;
+    const prev = document.getElementById('slide-' + current);
+    prev.classList.remove('active');
+    prev.classList.add('exit');
+    setTimeout(() => prev.classList.remove('exit'), 400);
+
+    current = idx;
+    const next = document.getElementById('slide-' + current);
+    next.classList.add('active');
+    updateDots();
+    updateProgress();
+  }
+
+  function navigate(dir) { goTo(current + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') navigate(-1);
+  });
+
+  buildDots();
+  updateProgress();
+</script>
+</body>
+</html>
