@@ -1,13 +1,13 @@
 import type { Slide } from "./types";
 
 export const SLIDES: Slide[] = [
-  // Slide 1 — CoverSlide (Issue 2에서 교체)
+  // Slide 1 — CoverSlide
   {
     id: 1,
-    type: "content",
-    chapter: "(표지)",
-    title: "Claude Harness를 활용한 AI 개발 워크플로우 구축",
-    bullets: ["Issue 2에서 CoverSlide 템플릿으로 교체됩니다"],
+    type: "cover",
+    title: "Claude Harness를 활용한\nAI 개발 워크플로우 구축",
+    subtitle: "CLAUDE.md · Rules · Hooks · Skills",
+    presenter: "조하은",
   },
 
   // Slide 2 — 왜 관심을 가지게 되었나
@@ -37,13 +37,13 @@ export const SLIDES: Slide[] = [
     ],
   },
 
-  // Slide 4 — SectionSlide (Issue 2에서 교체)
+  // Slide 4 — SectionSlide
   {
     id: 4,
-    type: "content",
-    chapter: "(섹션)",
+    type: "section",
+    sectionNumber: "02",
     title: "내가 구축하고 있는 Claude Harness",
-    bullets: ["Issue 2에서 SectionSlide 템플릿으로 교체됩니다"],
+    items: ["CLAUDE.md", "Design System", "Feature Planning"],
   },
 
   // Slide 5 — CLAUDE.md
@@ -81,13 +81,12 @@ export const SLIDES: Slide[] = [
     bullets: ["Issue 3에서 ProcessSlide 템플릿으로 교체됩니다"],
   },
 
-  // Slide 8 — SectionSlide (Issue 2에서 교체)
+  // Slide 8 — SectionSlide
   {
     id: 8,
-    type: "content",
-    chapter: "(섹션)",
+    type: "section",
+    sectionNumber: "03",
     title: "다음 실험 계획",
-    bullets: ["Issue 2에서 SectionSlide 템플릿으로 교체됩니다"],
   },
 
   // Slide 9 — SplitSlide (Issue 3에서 교체)
